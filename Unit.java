@@ -34,8 +34,12 @@ public abstract class Unit implements Fighter {
 
     @Override
     public boolean moveCloseTo(Fighter target) {
-        System.out.println(name + " is moving closer to " + target.getName());
-        return true;
+        if (target != this) {
+            System.out.println(name + " is moving closer to " + target.getName() + ".");
+            return true;
+        }
+        System.out.println("Can't move closer to yourself.");
+        return false;
     }
 
     @Override
