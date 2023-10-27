@@ -5,18 +5,20 @@ public class SpaceArena {
     private List<Monster> monsters = new ArrayList<>();
     private List<SpaceMarine> spaceMarines = new ArrayList<>();
 
-    public void enlistMonsters(List<Monster> monsters) {
-        for (Monster monster : monsters) {
-            if (!this.monsters.contains(monster)) {
-                this.monsters.add(monster);
+    public void enlistMonsters(List<Monster> monsterList) {
+        for (Monster monster : monsterList) {
+            if (!monsters.contains(monster)) {
+                monsters.add(monster);
+                System.out.println(monster.getName() + " has entered the arena.");
             }
         }
     }
 
-    public void enlistSpaceMarines(List<SpaceMarine> spaceMarines) {
-        for (SpaceMarine spaceMarine : spaceMarines) {
-            if (!this.spaceMarines.contains(spaceMarine)) {
-                this.spaceMarines.add(spaceMarine);
+    public void enlistSpaceMarines(List<SpaceMarine> spaceMarineList) {
+        for (SpaceMarine spaceMarine : spaceMarineList) {
+            if (!spaceMarines.contains(spaceMarine)) {
+                spaceMarines.add(spaceMarine);
+                System.out.println(spaceMarine.getName() + " has entered the arena.");
             }
         }
     }
@@ -25,38 +27,46 @@ public class SpaceArena {
         if (monsters.isEmpty()) {
             System.out.println("No monsters available to fight.");
             return false;
-        } else if (spaceMarines.isEmpty()) {
+        }
+
+        if (spaceMarines.isEmpty()) {
             System.out.println("Those cowards ran away.");
             return false;
         }
 
         while (!monsters.isEmpty() && !spaceMarines.isEmpty()) {
-            // Assuming first space marine and monster are always fighting
-            SpaceMarine spaceMarine = spaceMarines.get(0);
-            Monster monster = monsters.get(0);
-
-            System.out.println(spaceMarine.getName() + " has entered the arena.");
-            System.out.println(monster.getName() + " has entered the arena.");
-
-            while (spaceMarine.isAlive() && monster.isAlive()) {
-                spaceMarine.attack(monster);
-                if (monster.isAlive()) {
-                    monster.attack(spaceMarine);
+            // Space Marines attack
+            for (SpaceMarine marine : spaceMarines) {
+                for (Monster monster : monsters) {
+                    if (marine.attack(monster)) {
+                        monsters.removeIf(m -> m.getHp() <= 0);
+                        break;
+                    }
                 }
             }
 
-            if (spaceMarine.isAlive()) {
-                spaceMarine.recoverAP();
-                monsters.remove(0);
-            } else {
-                spaceMarines.remove(0);
+            // Monsters attack
+            for (Monster monster : monsters) {
+                for (SpaceMarine marine : spaceMarines) {
+                    if (monster.attack(marine)) {
+                        spaceMarines.removeIf(m -> m.getHp() <= 0);
+                        break;
+                    }
+                }
             }
         }
 
-        if (spaceMarines.isEmpty()) {
+        if (monsters.isEmpty()) {
             System.out.println("The monsters are victorious.");
         } else {
-            System.out.println("The space marines are victorious.");
+            System.out.println("The spaceMarines are victorious.");
+        }
+
+        for (SpaceMarine marine : spaceMarines) {
+            marine.recoverAP();
+        }
+        for (Monster monster : monsters) {
+            monster.recoverAP();
         }
 
         return true;

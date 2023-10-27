@@ -2,10 +2,10 @@ public abstract class Monster extends Unit {
     protected int damage;
     protected int apcost;
 
-    protected Monster(String name, int hp, int damage, int apcost) {
-        super(name, hp, 50);
-        this.damage = damage;
-        this.apcost = apcost;
+    public Monster(String name, int hp, int ap) {
+        super(name, hp, ap);
+        damage = 0;
+        apcost = 0;
     }
 
     public int getDamage() {
@@ -15,14 +15,6 @@ public abstract class Monster extends Unit {
     public int getApcost() {
         return apcost;
     }
-    
-    public boolean isAlive() {
-    return this.hp > 0;
-    }
-
-    public void setHp(int hp) {
-        this.hp = hp;
-    }
 
     @Override
     public boolean equip(Weapon weapon) {
@@ -31,17 +23,23 @@ public abstract class Monster extends Unit {
     }
 
     @Override
-    public boolean attack(Fighter fighter) {
-        if (!isCloseToTarget) {
-            System.out.println(name + ": I'm too far away from " + fighter.getName());
+    public boolean attack(Fighter target) {
+        if (!moveCloseTo(target)) {
+            System.out.println(name + ": I'm too far away from " + target.getName());
             return false;
         }
+
         if (ap < apcost) {
-            return false;
+            recoverAP();
         }
-        System.out.println(name + " attacks " + fighter.getName());
-        ap -= apcost;
-        fighter.receiveDamage(damage);
-        return true;
+
+        if (ap >= apcost) {
+            System.out.println(name + " attacks " + target.getName());
+            target.receiveDamage(damage);
+            ap -= apcost;
+            return true;
+        }
+
+        return false;
     }
 }

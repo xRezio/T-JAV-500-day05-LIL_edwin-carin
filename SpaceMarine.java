@@ -1,43 +1,66 @@
 public abstract class SpaceMarine extends Unit {
+    private Weapon weapon;
+
     public SpaceMarine(String name, int hp, int ap) {
         super(name, hp, ap);
+        weapon = null;
     }
 
-    public abstract void specialAttack(Fighter target);
-    public abstract void specialMove();
+    public Weapon getWeapon() {
+        return weapon;
+    }
 
-     @Override
+    @Override
     public boolean equip(Weapon weapon) {
-        if (weapon == null) return false;
-        if (hp > 0) {
+        if (this.weapon == null) {
             this.weapon = weapon;
-            System.out.println(name + " has equipped a " + weapon.getName());
+            System.out.println(name + " has been equipped with a " + weapon.getName() + ".");
             return true;
+        } else {
+            System.out.println("Weapon already equipped.");
+            return false;
         }
-        return false;
-    }
-
-    public boolean isAlive() {
-        return this.hp > 0;
     }
 
     @Override
     public boolean attack(Fighter target) {
         if (weapon == null) {
-            System.out.println(name + " is unarmed!");
+            System.out.println(name + ": Hey, this is crazy. I'm not going to fight this empty-handed.");
             return false;
         }
+
+        if (weapon.isMelee() && !moveCloseTo(target)) {
+            System.out.println(name + ": I'm too far away from " + target.getName());
+            return false;
+        }
+
         if (ap < weapon.getApcost()) {
-            System.out.println(name + " does not have enough AP to attack with " + weapon.getName());
-            return false;
+            recoverAP();
         }
-        if (!weapon.isMelee() && !isCloseToTarget) {
-            System.out.println(name + " is too far away to attack " + target.getName());
-            return false;
+
+        if (ap >= weapon.getApcost()) {
+            System.out.println(name + " attacks " + target.getName() + " with a " + weapon.getName());
+            target.receiveDamage(weapon.getDamage());
+            ap -= weapon.getApcost();
+            return true;
         }
-        ap -= weapon.getApcost();
-        System.out.println(name + " attacks " + target.getName() + " with a " + weapon.getName());
-        target.receiveDamage(weapon.getDamage());
-        return true;
+
+        return false;
+    }
+
+    @Override
+    public boolean moveCloseTo(Fighter target) {
+        if (weapon != null && weapon.isMelee()) {
+            return super.moveCloseTo(target);
+        }
+        return false;
+    }
+
+    @Override
+    public void recoverAP() {
+        ap += 9;
+        if (ap > 50) {
+            ap = 50;
+        }
     }
 }
