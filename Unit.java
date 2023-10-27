@@ -1,7 +1,9 @@
 public abstract class Unit implements Fighter {
+
     protected String name;
     protected int hp;
     protected int ap;
+    protected Fighter fighterClose = null;
 
     protected Unit(String name, int hp, int ap) {
         this.name = name;
@@ -9,39 +11,51 @@ public abstract class Unit implements Fighter {
         this.ap = ap;
     }
 
+    @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
-    public int getAp() {
-        return ap;
-    }
-
+    @Override
     public int getHp() {
         return hp;
     }
 
+    @Override
+    public int getAp() {
+        return ap;
+    }
+
+    @Override
     public void receiveDamage(int damage) {
-        hp -= damage;
-        if (hp <= 0) {
-            hp = 0;
+        if(damage < 1) {
+            return;
+        }
+        if(damage >= this.hp) {
+            this.hp = 0;
+        } else {
+            this.hp -= damage;
         }
     }
 
-    public boolean moveCloseTo(Fighter target) {
-        if (target != this) {
-            System.out.println(name + " is moving closer to " + target.getName() + ".");
+    @Override
+    public boolean moveCloseTo(Fighter fighter) {
+        if (this == fighter || fighter == null) { return false; }
+        if (this.fighterClose == null || this.fighterClose != fighter) {
+            this.fighterClose = fighter;
+            System.out.println(this.name + " is moving closer to " + fighter.getName() + ".");
             return true;
         } else {
-            System.out.println("Can't move closer to yourself.");
             return false;
         }
     }
 
+    @Override
     public void recoverAP() {
-        ap += 7;
-        if (ap > 50) {
-            ap = 50;
+        if (this.ap + 7 > 50) {
+            this.ap = 50;
+        } else {
+            this.ap += 7;
         }
     }
 }

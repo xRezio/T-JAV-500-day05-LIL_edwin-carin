@@ -1,16 +1,17 @@
 public class SuperMutant extends Monster {
+
+    private static int id = 1;
+
     public SuperMutant() {
-        super("SuperMutant", 170, 20);
-        damage = 60;
-        apcost = 20;
+        super("SuperMutant #" + id, 170, 20);
+        this.damage = 60;
+        id++;
+        System.out.println(this.name + ": Roaarrr!");
     }
 
     @Override
     public void recoverAP() {
         super.recoverAP();
-        hp += 10;
-        if (hp > 170) {
-            hp = 170;
-        }
+        hp = Math.min(170, hp + 10);
     }
 }

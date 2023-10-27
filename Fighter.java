@@ -1,10 +1,20 @@
 public interface Fighter {
-    boolean equip(Weapon weapon);
-    boolean attack(Fighter target);
-    void receiveDamage(int damage);
-    boolean moveCloseTo(Fighter target);
-    void recoverAP();
-    String getName();
-    int getAp();
-    int getHp();
+
+    public boolean equip(Weapon weapon);
+
+    public boolean attack(Fighter fighter);
+
+    public void receiveDamage(int damage);
+
+    public boolean moveCloseTo(Fighter fighter);
+
+    public void recoverAP();
+
+    public String getName();
+
+    public int getAp();
+
+    public int getHp();
+
+
 }
