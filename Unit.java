@@ -9,22 +9,18 @@ public abstract class Unit implements Fighter {
         this.ap = ap;
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public int getAp() {
         return ap;
     }
 
-    @Override
     public int getHp() {
         return hp;
     }
 
-    @Override
     public void receiveDamage(int damage) {
         hp -= damage;
         if (hp <= 0) {
@@ -32,17 +28,16 @@ public abstract class Unit implements Fighter {
         }
     }
 
-    @Override
     public boolean moveCloseTo(Fighter target) {
         if (target != this) {
             System.out.println(name + " is moving closer to " + target.getName() + ".");
             return true;
+        } else {
+            System.out.println("Can't move closer to yourself.");
+            return false;
         }
-        System.out.println("Can't move closer to yourself.");
-        return false;
     }
 
-    @Override
     public void recoverAP() {
         ap += 7;
         if (ap > 50) {
